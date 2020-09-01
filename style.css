@@ -63,7 +63,8 @@ body {
 /* welcome part */
 
 .welcome {
-    margin: 0 50px;  /*  must be changed in js */
+    margin: 0 50px;
+    padding: 20px;
     width: 80%;
     border-radius: 20px;
     border: 5px solid #571845;
@@ -139,4 +140,8 @@ button {
     background-color: #571845;
     border-radius: 25px;
     border: 3px solid #571845;
+}
+
+button:focus {
+    outline: none;
 }

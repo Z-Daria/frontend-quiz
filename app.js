@@ -22,14 +22,14 @@ document.getElementById('js-quiz').addEventListener('click', () => {
 });
 
 document.addEventListener('mouseover', () => {
-    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start')) {
+    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start' || event.target.id == 'next')) {
         event.target.style.border = '3px solid #900c3e';
         event.target.style.backgroundColor = '#5e3151';
         event.target.style.cursor = 'pointer';
     };
 });
 document.addEventListener('mouseout', function() {
-    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start')) {
+    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start' || event.target.id == 'next')) {
         event.target.style.border = '3px solid #571845';
         event.target.style.backgroundColor = '#571845';
     };
@@ -46,7 +46,7 @@ let answerSelected;
 let questionsNum;
 let collection;
 
-const HTML = [
+const htmlQuestions = [
     {
         question: 'What does HTML stands for?',
         answers: ['Hypertext Machine Language', 'Hypertext and links markup language', 'Hypertext Markup Language', 'Hightext Machine Language'], 
@@ -69,6 +69,52 @@ const HTML = [
     }
 ];
 
+const cssQuestions = [
+    {
+        question: 'What does CSS stand for?',
+        answers: ['Computer Style Sheets', 'Creative Style Sheets', 'Colorful Style Sheets', 'Cascading Style Sheets'], 
+        correct: 3
+    },
+    {
+        question: 'What is the default value of the position property?',
+        answers: ['fixed', 'static', 'relative', 'absolute'], 
+        correct: 1
+    },
+    {
+        question: 'How do you select all p elements inside a div element?',
+        answers: ['div p', 'div.p', 'div + p', 'div-p'], 
+        correct: 0
+    },
+    {
+        question: 'How do you group selectors?',
+        answers: ['Separate each selector with a comma', 'Separate each selector with a plus sign', 'Separate each selector with a space'], 
+        correct: 0
+    }
+];
+
+const jsQuestions = [
+    {
+        question: 'The external JavaScript file must contain the script tag.',
+        answers: ['True', 'False'], 
+        correct: 1
+    },
+    {
+        question: 'How to write an IF statement in JavaScript?',
+        answers: ['if i = 5', 'if (i == 5)', 'if i = 5 then', 'if i == 5 then'], 
+        correct: 1
+    },
+    {
+        question: 'Which event occurs when the user clicks on an HTML element?',
+        answers: ['onmouseover', 'onchange', 'onmouseclick', 'onclick'], 
+        correct: 3
+    },
+    {
+        question: 'What will the following code return: Boolean(10 > 9)?',
+        answers: ['false', 'true', 'NaN'], 
+        correct: 1
+    }
+];
+
 function showQuestion(collection) {
     console.log(currentQ);
     let html = '<div class="quiz">';
@@ -81,7 +127,7 @@ function showQuestion(collection) {
     for (let answer of answers) {
         html += '<div class="option"><span>' + answer + '</span></div>';
     };
-    html += '</div></div>';
+    html += '</div><button id="next">Next</button></div>';
     document.querySelector('.content').innerHTML = html;
     currentQ++;
     handleClickAnswer();
@@ -89,15 +135,16 @@ function showQuestion(collection) {
 
 function handleClickAnswer() {
     document.addEventListener('click', function() {
+        console.log('clicked');
         if (event.target && event.target.className == 'option') {
+            let options = document.getElementsByClassName('option');
+            for (let option of options) {
+                option.style.pointerEvents = 'none';     // make answers (div and span) unclickable
+                option.firstChild.style.pointerEvents = 'none';
+            };
             let selectedAnswer = event.target.querySelector('span').textContent;
             countCorrectAnswers(selectedAnswer);
             showCorrectAnswer();
-            if (currentQ + 1 > collection.length) {
-                showEndPage();
-            } else {
-                showQuestion(collection);
-            };
         };
     });
 };
@@ -110,22 +157,49 @@ function countCorrectAnswers(answer) {
 };
 
 function showCorrectAnswer() {
+    console.log('Show correct');
     let options = document.getElementsByClassName('option');
     for (let option of options) {
         if (option.querySelector('span').textContent == answers[correctAnswer]) {
             option.style.backgroundColor = 'green';
-        }
+        };
     };
 };
 
+document.addEventListener('click', function() {
+    if (event.target && event.target.id == 'next') {
+        if (currentQ + 1 > collection.length) {
+            showEndPage();
+        } else {
+            showQuestion(collection);
+        };
+    }
+});
+
 function showEndPage() {
-    document.querySelector('.content').innerHTML = '<h1>The end</h1><span>' + count + '</span>';
+    document.querySelector('.content').innerHTML = '<div class="welcome"><span>You finished the quiz!</span><span>Your score: ' + count + '/' + collection.length +  '</span></div>';
 };
 
 document.addEventListener('click', function() {
     if (event.target && event.target.id == 'html-start') {
         currentQ = 0;
-        collection = HTML;
+        collection = htmlQuestions;
+        showQuestion(collection);
+    }
+});
+
+document.addEventListener('click', function() {
+    if (event.target && event.target.id == 'css-start') {
+        currentQ = 0;
+        collection = cssQuestions;
+        showQuestion(collection);
+    }
+});
+
+document.addEventListener('click', function() {
+    if (event.target && event.target.id == 'js-start') {
+        currentQ = 0;
+        collection = jsQuestions;
         showQuestion(collection);
     }
 });
