@@ -130,24 +130,21 @@ function showQuestion(collection) {
     html += '</div><button id="next">Next</button></div>';
     document.querySelector('.content').innerHTML = html;
     currentQ++;
-    handleClickAnswer();
 };
 
-function handleClickAnswer() {
-    document.addEventListener('click', function() {
-        console.log('clicked');
-        if (event.target && event.target.className == 'option') {
-            let options = document.getElementsByClassName('option');
-            for (let option of options) {
-                option.style.pointerEvents = 'none';     // make answers (div and span) unclickable
-                option.firstChild.style.pointerEvents = 'none';
-            };
-            let selectedAnswer = event.target.querySelector('span').textContent;
-            countCorrectAnswers(selectedAnswer);
-            showCorrectAnswer();
+document.addEventListener('click', function() {
+    console.log('clicked');
+    if (event.target && event.target.className == 'option') {
+        let options = document.getElementsByClassName('option');
+        for (let option of options) {
+            option.style.pointerEvents = 'none';     
+            option.firstChild.style.pointerEvents = 'none';
         };
-    });
-};
+        let selectedAnswer = event.target.querySelector('span').textContent;
+        countCorrectAnswers(selectedAnswer);
+        showCorrectAnswer();
+    };
+});
 
 function countCorrectAnswers(answer) {
     if (answer == answers[correctAnswer]) {
