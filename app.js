@@ -1,47 +1,7 @@
-const navs = document.getElementsByClassName('nav-item');
-for (let navItem of navs) {
-    navItem.onmouseover = function() {
-        navItem.style.backgroundColor = '#900c3e';
-        navItem.style.cursor = 'pointer';
-    };
-    navItem.onmouseout = function() {
-        navItem.style.backgroundColor = '';
-    };
-};
-
-document.getElementById('html-quiz').addEventListener('click', () => {
-    document.querySelector('.content').innerHTML = '<div class="welcome"><h1>HTML</h1><p>HTML is the standard markup language for Web pages. With HTML you can create your own Website. Take this test and prove your knowledge in HTML5.</p><button id="html-start">Start</button></div>';
-});
-
-document.getElementById('css-quiz').addEventListener('click', () => {
-    document.querySelector('.content').innerHTML = '<div class="welcome"><h1>CSS</h1><p>CSS is the language we use to style an HTML document. CSS describes how HTML elements should be displayed. Take this test and prove your knowledge in CSS.</p><button id="css-start">Start</button></div>';
-});
-
-document.getElementById('js-quiz').addEventListener('click', () => {
-    document.querySelector('.content').innerHTML = '<div class="welcome"><h1>JavaScript</h1><p>JavaScript is the programming language of the Web. JavaScript is used to add interactivity and other dynamic features to web sites. Take this test and prove your knowledge in JavaScript.</p><button id="js-start">Start</button></div>';
-});
-
-document.addEventListener('mouseover', () => {
-    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start' || event.target.id == 'next')) {
-        event.target.style.border = '3px solid #900c3e';
-        event.target.style.backgroundColor = '#5e3151';
-        event.target.style.cursor = 'pointer';
-    };
-});
-document.addEventListener('mouseout', function() {
-    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start' || event.target.id == 'next')) {
-        event.target.style.border = '3px solid #571845';
-        event.target.style.backgroundColor = '#571845';
-    };
-});
-
-
-
-
 let currentQ;
 let answers;
 let correctAnswer;
-let count = 0;
+let count;
 let answerSelected;
 let questionsNum;
 let collection;
@@ -115,6 +75,7 @@ const jsQuestions = [
     }
 ];
 
+// Displays the current question to the user
 function showQuestion(collection) {
     console.log(currentQ);
     let html = '<div class="quiz">';
@@ -132,23 +93,9 @@ function showQuestion(collection) {
     currentQ++;
 };
 
-document.addEventListener('click', function() {
-    console.log('clicked');
-    if (event.target && event.target.className == 'option') {
-        let options = document.getElementsByClassName('option');
-        for (let option of options) {
-            option.style.pointerEvents = 'none';     
-            option.firstChild.style.pointerEvents = 'none';
-        };
-        let selectedAnswer = event.target.querySelector('span').textContent;
-        countCorrectAnswers(selectedAnswer);
-        showCorrectAnswer();
-    };
-});
-
+// Counts correct answers
 function countCorrectAnswers(answer) {
     if (answer == answers[correctAnswer]) {
-        console.log('I count');
         count++ ;
     };
 };
@@ -163,6 +110,91 @@ function showCorrectAnswer() {
     };
 };
 
+function showEndPage() {
+    document.querySelector('.content').innerHTML = '<div class="welcome"><span>You finished the quiz!</span><span>Your score: ' + count + '/' + collection.length +  '</span></div>';
+};
+
+
+const navs = document.getElementsByClassName('nav-item');
+for (let navItem of navs) {
+    navItem.onmouseover = function() {
+        navItem.style.backgroundColor = '#900c3e';
+        navItem.style.cursor = 'pointer';
+    };
+    navItem.onmouseout = function() {
+        navItem.style.backgroundColor = '';
+    };
+};
+
+
+// Adds click event on the html quiz option on the navbar
+document.getElementById('html-quiz').addEventListener('click', () => {
+    document.querySelector('.content').innerHTML = '<div class="welcome"><h1>HTML</h1><p>HTML is the standard markup language for Web pages. With HTML you can create your own Website. Take this test and prove your knowledge in HTML5.</p><button id="html-start">Start</button></div>';
+});
+
+// Adds click event on the html quiz option on the navbar
+document.getElementById('css-quiz').addEventListener('click', () => {
+    document.querySelector('.content').innerHTML = '<div class="welcome"><h1>CSS</h1><p>CSS is the language we use to style an HTML document. CSS describes how HTML elements should be displayed. Take this test and prove your knowledge in CSS.</p><button id="css-start">Start</button></div>';
+});
+
+// Adds click event on the html quiz option on the navbar
+document.getElementById('js-quiz').addEventListener('click', () => {
+    document.querySelector('.content').innerHTML = '<div class="welcome"><h1>JavaScript</h1><p>JavaScript is the programming language of the Web. JavaScript is used to add interactivity and other dynamic features to web sites. Take this test and prove your knowledge in JavaScript.</p><button id="js-start">Start</button></div>';
+});
+
+document.addEventListener('mouseover', () => {
+    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start' || event.target.id == 'next')) {
+        event.target.style.border = '3px solid #900c3e';
+        event.target.style.backgroundColor = '#5e3151';
+        event.target.style.cursor = 'pointer';
+    };
+});
+document.addEventListener('mouseout', function() {
+    if (event.target && (event.target.id == 'html-start' || event.target.id == 'css-start' || event.target.id == 'js-start' || event.target.id == 'next')) {
+        event.target.style.border = '3px solid #571845';
+        event.target.style.backgroundColor = '#571845';
+    };
+});
+
+
+// Starts the quiz and resets data when replaying
+document.addEventListener('click', function() {
+    if (event.target && event.target.id == 'html-start') {
+        currentQ = 0;
+        count = 0;
+        collection = htmlQuestions;
+        showQuestion(collection);
+    };
+    if (event.target && event.target.id == 'css-start') {
+        currentQ = 0;
+        count = 0;
+        collection = cssQuestions;
+        showQuestion(collection);
+    };
+    if (event.target && event.target.id == 'js-start') {
+        currentQ = 0;
+        count = 0;
+        collection = jsQuestions;
+        showQuestion(collection);
+    }
+});
+
+// Adds click event on the answer to the current question
+document.addEventListener('click', function() {
+    if (event.target && event.target.className == 'option') {
+        let options = document.getElementsByClassName('option');
+        for (let option of options) {
+            option.style.pointerEvents = 'none';     
+            option.firstChild.style.pointerEvents = 'none';
+        };
+        let selectedAnswer = event.target.querySelector('span').textContent;
+        countCorrectAnswers(selectedAnswer);
+        showCorrectAnswer();
+    };
+});
+
+// Adds click event on the next button
+// Shows the next question or sends the user to the end page if end of the game
 document.addEventListener('click', function() {
     if (event.target && event.target.id == 'next') {
         if (currentQ + 1 > collection.length) {
@@ -170,33 +202,5 @@ document.addEventListener('click', function() {
         } else {
             showQuestion(collection);
         };
-    }
-});
-
-function showEndPage() {
-    document.querySelector('.content').innerHTML = '<div class="welcome"><span>You finished the quiz!</span><span>Your score: ' + count + '/' + collection.length +  '</span></div>';
-};
-
-document.addEventListener('click', function() {
-    if (event.target && event.target.id == 'html-start') {
-        currentQ = 0;
-        collection = htmlQuestions;
-        showQuestion(collection);
-    }
-});
-
-document.addEventListener('click', function() {
-    if (event.target && event.target.id == 'css-start') {
-        currentQ = 0;
-        collection = cssQuestions;
-        showQuestion(collection);
-    }
-});
-
-document.addEventListener('click', function() {
-    if (event.target && event.target.id == 'js-start') {
-        currentQ = 0;
-        collection = jsQuestions;
-        showQuestion(collection);
     }
 });
